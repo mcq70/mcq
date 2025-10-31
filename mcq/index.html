@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MCQ Quiz</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(to right, #00c6ff, #0072ff);
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        color: #fff;
+    }
+
+    .container {
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: 30px;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 600px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        position: relative;
+        text-align: center;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+    }
+
+    .question {
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+    }
+
+    .options button {
+        display: block;
+        width: 100%;
+        margin: 10px 0;
+        padding: 12px;
+        font-size: 1rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .options button:hover {
+        background-color: #00c6ff;
+        color: #000;
+        transform: scale(1.05);
+    }
+
+    .next-btn, .restart-btn {
+        display: block;
+        margin: 20px auto 0 auto;
+        padding: 12px 20px;
+        font-size: 1rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        background-color: #ff7e5f;
+        transition: all 0.3s ease;
+    }
+
+    .next-btn:hover, .restart-btn:hover {
+        background-color: #feb47b;
+        transform: scale(1.05);
+    }
+
+    .ad-space {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #333;
+        text-align: center;
+        border-radius: 10px;
+        font-size: 1rem;
+    }
+
+    .selected {
+        background-color: #00ff99;
+        color: #000;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h3>Bhartiy Sanskrati Gyan Prasar Exam</h3>
+    <div class="question-box">
+        <div class="question" id="question">Question will appear here</div>
+        <div class="options" id="options"></div>
+    </div>
+    <button class="next-btn" id="nextBtn" disabled>Next Question</button>
+    <button class="restart-btn" id="restartBtn" style="display:none;">Restart Quiz</button>
+    <div class="ad-space">
+        Advertisement Space<br>
+        <small>Place your ad here!</small>
+    </div>
+</div>
+
+<script>
+const quizData = [
+    { question: "What is the capital of France?", options: ["London", "Berlin", "Paris", "Madrid"], answer: "Paris" },
+    { question: "Which language runs in a web browser?", options: ["Java", "C", "Python", "JavaScript"], answer: "JavaScript" },
+    { question: "Who is the CEO of Tesla?", options: ["Jeff Bezos", "Elon Musk", "Bill Gates", "Tony Stark"], answer: "Elon Musk" }
+];
+
+let currentQuestion = 0;
+let selectedAnswer = null;
+let score = 0;
+
+const questionEl = document.getElementById("question");
+const optionsEl = document.getElementById("options");
+const nextBtn = document.getElementById("nextBtn");
+const restartBtn = document.getElementById("restartBtn");
+
+function loadQuestion() {
+    optionsEl.innerHTML = "";
+    selectedAnswer = null;
+    nextBtn.disabled = true;
+
+    if (currentQuestion < quizData.length) {
+        questionEl.textContent = quizData[currentQuestion].question;
+        quizData[currentQuestion].options.forEach(option => {
+            const button = document.createElement("button");
+            button.textContent = option;
+            button.onclick = () => selectAnswer(button, option);
+            optionsEl.appendChild(button);
+        });
+    } else {
+        // Show result
+        questionEl.textContent = `Quiz Completed! Your score: ${score} / ${quizData.length}`;
+        optionsEl.innerHTML = "";
+        nextBtn.style.display = "none";
+        restartBtn.style.display = "block";
+    }
+}
+
+function selectAnswer(button, option) {
+    // Remove highlight from all options
+    Array.from(optionsEl.children).forEach(btn => btn.classList.remove("selected"));
+    // Highlight selected option
+    button.classList.add("selected");
+    selectedAnswer = option;
+    nextBtn.disabled = false;
+}
+
+nextBtn.onclick = () => {
+    if (selectedAnswer === quizData[currentQuestion].answer) {
+        score++;
+    }
+    currentQuestion++;
+    loadQuestion();
+};
+
+restartBtn.onclick = () => {
+    currentQuestion = 0;
+    score = 0;
+    nextBtn.style.display = "block";
+    restartBtn.style.display = "none";
+    loadQuestion();
+};
+
+// Initialize
+loadQuestion();
+</script>
+</body>
+</html>
